@@ -1,0 +1,37 @@
+{
+  "model": "standardized_logistic_regression",
+  "target": "pressure_label = mean departure delay >= 15 minutes OR capacity loss >= 3%",
+  "features": [
+    "completion_ratio",
+    "mean_dep_delay",
+    "weather_delay_share",
+    "visibility_mean",
+    "wind_mean"
+  ],
+  "mean": [
+    0.9840840923700366,
+    12.11286620745443,
+    0.7762817970659441,
+    9.388574156470153,
+    7.515340748980348
+  ],
+  "scale": [
+    0.018446797594321683,
+    4.419618665109927,
+    0.8245597827286917,
+    0.5403425311101431,
+    1.5204945237343699
+  ],
+  "weights": [
+    -2.2251333575539194,
+    -4.222586500874189,
+    3.2465671384794277,
+    -0.03526752309493388,
+    -0.047875316236786106,
+    0.2874498625419497
+  ],
+  "rows": 40,
+  "positive_rate": 0.275,
+  "brier_score_in_sample": 0.01829205786781381,
+  "warning": "Exploratory auxiliary model; not a causal weather model and not an operational decision authority."
+}

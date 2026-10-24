@@ -1,0 +1,38 @@
+{
+  "name": "flightguard",
+  "version": "2.0.0",
+  "private": true,
+  "type": "module",
+  "workspaces": [
+    "apps/*",
+    "packages/*"
+  ],
+  "engines": {
+    "node": ">=24 <25"
+  },
+  "scripts": {
+    "build:contracts": "npm run build -w @flightguard/contracts",
+    "build": "npm run build:contracts && npm run build -w @flightguard/api && npm run build -w @flightguard/web",
+    "dev": "npm run build:contracts && concurrently -k -n contracts,api,web -c yellow,cyan,green \"npm run dev -w @flightguard/contracts\" \"npm run dev -w @flightguard/api\" \"npm run dev -w @flightguard/web\"",
+    "typecheck": "npm run build:contracts && npm run typecheck -w @flightguard/api && npm run typecheck -w @flightguard/web",
+    "test": "npm run build:contracts && npm run test -w @flightguard/api",
+    "test:e2e": "playwright test",
+    "start": "npm run start -w @flightguard/api",
+    "db:migrate": "npm run db:migrate -w @flightguard/api",
+    "db:backup": "npm run db:backup -w @flightguard/api",
+    "data:import": "npm run data:import -w @flightguard/api",
+    "evaluate:live": "npm run evaluate:live -w @flightguard/api",
+    "package": "powershell -NoProfile -ExecutionPolicy Bypass -File scripts/package.ps1",
+    "check": "npm run typecheck && npm test && npm run build"
+  },
+  "devDependencies": {
+    "@playwright/test": "^1.56.1",
+    "concurrently": "^9.2.1",
+    "typescript": "^5.9.3",
+    "vitest": "^3.2.4"
+  },
+  "allowScripts": {
+    "better-sqlite3@12.11.1": true,
+    "esbuild@0.28.2": true
+  }
+}

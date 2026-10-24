@@ -1,0 +1,79 @@
+{
+  "baseUrl": "http://127.0.0.1:4173",
+  "instructions": {
+    "createEvent": "POST /api/events",
+    "createAnalysis": "POST /api/analyses with {eventId, revision: 1}",
+    "askQuestion": "POST /api/analyses/{analysisId}/questions with {question}"
+  },
+  "cases": [
+    {
+      "name": "weather_pressure_high",
+      "payload": {
+        "airportId": "A002",
+        "eventTimeLabel": "2025年8月1日 14:00",
+        "eventTime": "2025-08-01T14:00:00+08:00",
+        "baselineMonth": "2025-08",
+        "description": "模拟雷雨和强对流导致进离场容量下降，已有航班等待放行。",
+        "weatherRisk": true,
+        "operatingPressure": true,
+        "formalDelay": null,
+        "resourceAdequate": null,
+        "sources": [
+          {"sourceId": "SIM-WEATHER", "recordLocator": "03_机场天气月度!155"},
+          {"sourceId": "SIM-BASE", "recordLocator": "01_机场月度运行基线!155"}
+        ],
+        "knownFacts": ["模拟雷雨预警已发布", "模拟已有航班等待放行"],
+        "unknowns": ["跑道开放数量", "流量控制状态"],
+        "metrics": [
+          {"metric": "scheduled_completion_ratio", "value": 0.70, "period": "2025-08", "granularity": "month", "sourceId": "SIM-BASE"}
+        ]
+      }
+    },
+    {
+      "name": "stable_monitor",
+      "payload": {
+        "airportId": "A001",
+        "eventTimeLabel": "2025年8月1日 14:00",
+        "eventTime": "2025-08-01T14:00:00+08:00",
+        "baselineMonth": "2025-08",
+        "description": "模拟机场运行平稳，未发现天气和运行压力信号。",
+        "weatherRisk": false,
+        "operatingPressure": false,
+        "formalDelay": false,
+        "resourceAdequate": true,
+        "sources": [
+          {"sourceId": "SIM-BASE", "recordLocator": "01_机场月度运行基线!155"}
+        ],
+        "knownFacts": ["模拟运行状态正常"],
+        "unknowns": [],
+        "metrics": [
+          {"metric": "scheduled_completion_ratio", "value": 0.90, "period": "2025-08", "granularity": "month", "sourceId": "SIM-BASE"}
+        ]
+      }
+    },
+    {
+      "name": "conflicting_sources",
+      "payload": {
+        "airportId": "A003",
+        "eventTimeLabel": "2025年8月1日 14:00",
+        "eventTime": "2025-08-01T14:00:00+08:00",
+        "baselineMonth": "2025-08",
+        "description": "模拟两个来源对同一机场完成率给出不同数值。",
+        "weatherRisk": null,
+        "operatingPressure": true,
+        "formalDelay": null,
+        "resourceAdequate": null,
+        "sources": [
+          {"sourceId": "SIM-BASE", "recordLocator": "source-a"},
+          {"sourceId": "SIM-WEATHER", "recordLocator": "source-b"}
+        ],
+        "knownFacts": ["模拟来源A报告完成率80%", "模拟来源B报告完成率60%"],
+        "unknowns": ["哪一个来源为最新版本"],
+        "metrics": [
+          {"metric": "scheduled_completion_ratio", "value": 0.80, "period": "2025-08", "granularity": "month", "sourceId": "SIM-BASE"},
+          {"metric": "scheduled_completion_ratio", "value": 0.60, "period": "2025-08", "granularity": "month", "sourceId": "SIM-WEATHER"}
+        ]
+      }
+    }
+  ]
+}

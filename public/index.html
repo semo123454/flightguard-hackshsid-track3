@@ -1,0 +1,229 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="description" content="HackSHSID 2026 Track 3 重点机场航班异常应对智能助手">
+  <title>航策 FlightGuard</title>
+  <link rel="stylesheet" href="/style.css">
+</head>
+<body>
+  <aside class="sidebar">
+    <a class="brand" href="#dashboard" aria-label="航策首页">
+      <span class="brand-mark" aria-hidden="true">航</span>
+      <span><strong>航策</strong><small>FlightGuard</small></span>
+    </a>
+    <nav class="nav" aria-label="主导航">
+      <button class="nav-item active" data-page="dashboard"><span>01</span>运行总览</button>
+      <button class="nav-item" data-page="analysis"><span>02</span>事件研判</button>
+      <button class="nav-item" data-page="history"><span>03</span>复核记录</button>
+      <button class="nav-item" data-page="tests"><span>04</span>场景测试</button>
+      <button class="nav-item" data-page="governance"><span>05</span>规则与治理</button>
+    </nav>
+    <div class="sidebar-note">
+      <span class="live-dot"></span>
+      <div><strong>离线决策支持</strong><small>赛事模拟数据 · 不执行真实操作</small></div>
+    </div>
+  </aside>
+
+  <main class="shell">
+    <header class="topbar">
+      <button class="menu-button" id="menuButton" aria-label="打开菜单">☰</button>
+      <div>
+        <p class="eyebrow">HACKSHSID 2026 · TRACK 3</p>
+        <h1 id="pageTitle">运行总览</h1>
+      </div>
+      <div class="topbar-actions">
+        <span class="sim-badge">SIMULATION / 模拟</span>
+        <button class="primary compact" id="newAnalysis">＋ 新建研判</button>
+      </div>
+    </header>
+
+    <section class="page active" id="page-dashboard">
+      <div class="hero">
+        <div class="hero-copy">
+          <p class="eyebrow light">AIRPORT DISRUPTION INTELLIGENCE</p>
+          <h2>先核实，再建议；让每个判断都有出处。</h2>
+          <p>比较机场历史基线与同类水平，识别异常候选，明确核查顺序与人工决策边界。</p>
+          <button class="accent" data-go="analysis">开始事件研判 <span>→</span></button>
+        </div>
+        <div class="hero-protocol" aria-label="研判流程">
+          <p class="eyebrow light">DECISION PROTOCOL</p>
+          <div class="protocol-step"><span>01</span><strong>核对事实与来源</strong></div>
+          <div class="protocol-step"><span>02</span><strong>比较历史与同类</strong></div>
+          <div class="protocol-step"><span>03</span><strong>标记边界并交由人工</strong></div>
+        </div>
+      </div>
+
+      <div class="metric-grid" id="metricGrid">
+        <article class="metric-card"><span>覆盖机场</span><strong id="metricAirports">—</strong><small>大型 / 中型 / 小型</small></article>
+        <article class="metric-card"><span>已生成研判</span><strong id="metricAnalyses">—</strong><small>保留完整证据链</small></article>
+        <article class="metric-card warning"><span>待人工复核</span><strong id="metricPending">—</strong><small>系统不自动执行</small></article>
+        <article class="metric-card"><span>反馈记录</span><strong id="metricFeedback">—</strong><small>接受 / 修改 / 拒绝</small></article>
+      </div>
+
+      <div class="dashboard-grid">
+        <article class="panel airport-panel">
+          <div class="panel-head">
+            <div><p class="eyebrow">BASELINE SNAPSHOT</p><h3>机场运行基线</h3></div>
+            <span class="subtle">2025-12 · 月度模拟</span>
+          </div>
+          <div class="table-wrap">
+            <table>
+              <thead><tr><th>机场</th><th>分类</th><th>业务重要度</th><th>计划完成比例</th><th>同类平均</th><th>差值</th></tr></thead>
+              <tbody id="airportTable"></tbody>
+            </table>
+          </div>
+        </article>
+        <article class="panel recent-panel">
+          <div class="panel-head"><div><p class="eyebrow">RECENT CASES</p><h3>最近研判</h3></div></div>
+          <div id="recentCases" class="empty-state">尚无研判记录</div>
+        </article>
+      </div>
+    </section>
+
+    <section class="page" id="page-analysis">
+      <div class="analysis-progress" aria-label="研判进度">
+        <div class="progress-step active" data-analysis-step="0"><span>1</span><strong>事件输入</strong></div>
+        <i aria-hidden="true"></i>
+        <div class="progress-step" data-analysis-step="1"><span>2</span><strong>证据核对</strong></div>
+        <i aria-hidden="true"></i>
+        <div class="progress-step" data-analysis-step="2"><span>3</span><strong>研判生成</strong></div>
+        <i aria-hidden="true"></i>
+        <div class="progress-step" data-analysis-step="3"><span>4</span><strong>人工复核</strong></div>
+      </div>
+      <div class="analysis-layout">
+        <article class="panel input-panel">
+          <div class="panel-head">
+            <div><p class="eyebrow">EVENT INPUT</p><h3>输入事件</h3></div>
+            <select id="presetSelect" aria-label="选择模拟事件"><option value="">自定义事件</option></select>
+          </div>
+          <form id="analysisForm">
+            <div class="form-section-title"><strong>01 · 事件上下文</strong><span>从可核实事实开始</span></div>
+            <div class="field-row">
+              <label>机场<select name="airport" id="airportSelect" required></select></label>
+              <label>历史参考月<input name="baselineMonth" type="month" min="2024-01" max="2025-12" value="2025-12" required></label>
+            </div>
+            <div class="field-row">
+              <label>事件名称<input name="name" placeholder="例如：晚高峰运行压力"></label>
+              <label>事件时点<input name="time" placeholder="例如：第7天 16:30"></label>
+            </div>
+            <label>事件描述<textarea name="description" rows="3" placeholder="天气、运行情况与现场备注"></textarea></label>
+            <div class="field-row">
+              <label>已知信息<textarea name="known" rows="2" placeholder="仅填写已核实事实"></textarea></label>
+              <label>未知信息<textarea name="unknown" rows="2" placeholder="需要继续核查的内容"></textarea></label>
+            </div>
+            <div class="section-label">02 · 量化与证据 <span>可留空，不会被系统补造</span></div>
+            <div class="field-row three">
+              <label>当前完成比例（%）<input name="currentRate" type="number" min="0" max="100" step="0.01" placeholder="例如 72.5"></label>
+              <label>来源甲（%）<input name="sourceA" type="number" min="0" max="100" step="0.01"></label>
+              <label>来源乙（%）<input name="sourceB" type="number" min="0" max="100" step="0.01"></label>
+            </div>
+            <label>可靠独立来源数<select name="confirmedSources"><option value="0">0 — 未确认</option><option value="1" selected>1 — 单一来源</option><option value="2">2 — 已交叉确认</option><option value="3">3 — 多源确认</option></select></label>
+            <div class="section-label">03 · 情境信号 <span>由操作人员根据已核实信息勾选</span></div>
+            <div class="toggle-grid">
+              <label class="toggle"><input type="checkbox" name="weatherRisk"><span></span>天气风险</label>
+              <label class="toggle"><input type="checkbox" name="operatingPressure"><span></span>运行压力</label>
+              <label class="toggle"><input type="checkbox" name="formalDelay"><span></span>正式延误</label>
+              <label class="toggle"><input type="checkbox" name="conflict"><span></span>来源冲突</label>
+              <label class="toggle"><input type="checkbox" name="unreliable"><span></span>来源不可靠</label>
+              <label class="toggle"><input type="checkbox" name="safetyIssue"><span></span>涉及安全</label>
+            </div>
+            <label>用户请求（可选）<input name="request" placeholder="例如：准备旅客沟通草案"></label>
+            <div class="form-note">请勿输入旅客或员工个人信息。手机号、邮箱、身份证号和姓名会在分析前自动脱敏。</div>
+            <button class="primary full" type="submit" id="analyzeButton">生成可解释研判 <span>→</span></button>
+          </form>
+        </article>
+
+        <div class="result-column">
+          <div class="result-empty panel" id="resultEmpty">
+            <div class="empty-orbit"><span>AI</span></div>
+            <h3>等待事件输入</h3>
+            <p>选择一个赛事模拟事件，或填写新情境。系统将动态读取机场基线，而不是回放固定答案。</p>
+          </div>
+          <div id="analysisResult" hidden>
+            <article class="panel result-hero">
+              <div class="result-topline"><span id="resultStatus">待复核</span><button class="ghost" id="downloadResult">导出标准 JSON</button></div>
+              <div class="risk-row"><span class="risk-badge" id="riskBadge">中</span><div><p class="eyebrow">RISK ASSESSMENT</p><h2 id="resultAirport">—</h2><p id="resultSummary">—</p></div></div>
+              <div class="signal-strip" id="signalStrip"></div>
+            </article>
+            <div class="mini-grid" id="baselineMetrics"></div>
+            <div class="result-tabs" role="tablist">
+              <button class="result-tab active" data-result-tab="decision">研判与行动</button>
+              <button class="result-tab" data-result-tab="evidence">证据链</button>
+              <button class="result-tab" data-result-tab="messages">沟通草案</button>
+              <button class="result-tab" data-result-tab="feedback">人工复核</button>
+            </div>
+            <div class="result-pane active" id="result-decision">
+              <article class="panel"><div class="panel-head"><div><p class="eyebrow">HISTORICAL CONTEXT</p><h3>24 个月运行趋势</h3></div><span class="legend"><i></i>机场 <i></i>同类平均</span></div><div id="trendChart" class="chart"></div></article>
+              <article class="panel"><div class="panel-head"><div><p class="eyebrow">PRIORITIZED RESPONSE</p><h3>建议行动顺序</h3></div></div><div id="actionList" class="timeline"></div></article>
+              <div class="two-col">
+                <article class="panel"><div class="panel-head"><h3>信息缺口</h3></div><ul class="clean-list danger-list" id="gapList"></ul></article>
+                <article class="panel"><div class="panel-head"><h3>升级与人工边界</h3></div><p id="escalationText"></p><div class="boundary-box" id="boundaryText"></div></article>
+              </div>
+              <article class="panel ask-panel"><div><p class="eyebrow">CHALLENGE THE RESULT</p><h3>追问这次研判</h3></div><form id="askForm"><input id="questionInput" placeholder="例如：航班是否一定会延误？"><button class="primary" type="submit">提问</button></form><div id="answerBox" hidden></div></article>
+            </div>
+            <div class="result-pane" id="result-evidence">
+              <article class="panel"><div class="panel-head"><div><p class="eyebrow">TRACEABILITY</p><h3>事实、历史背景与人工反馈</h3></div></div><div id="evidenceList" class="evidence-list"></div></article>
+              <article class="panel"><div class="panel-head"><h3>适用规则</h3></div><div id="ruleList" class="rule-grid"></div></article>
+              <article class="panel definition"><p class="eyebrow">DISRUPTION DEFINITION</p><h3>异常定义</h3><p id="definitionText"></p></article>
+            </div>
+            <div class="result-pane" id="result-messages">
+              <article class="panel"><div class="message-tabs"><button class="message-tab active" data-message="operations">内部运营</button><button class="message-tab" data-message="coordination">机场协调</button><button class="message-tab" data-message="passenger">旅客信息</button></div><div class="message-draft"><span>草案 · 未发送 · 待人工审核</span><p id="messageText"></p><button class="ghost" id="copyMessage">复制草案</button></div></article>
+            </div>
+            <div class="result-pane" id="result-feedback">
+              <article class="panel feedback-panel">
+                <div class="panel-head"><div><p class="eyebrow">HUMAN-IN-THE-LOOP</p><h3>记录人工处理结果</h3></div></div>
+                <form id="feedbackForm">
+                  <div class="decision-options">
+                    <label><input type="radio" name="decision" value="接受" checked><span>接受建议<small>保留本次研判</small></span></label>
+                    <label><input type="radio" name="decision" value="修改"><span>修改建议<small>补充事实并重评</small></span></label>
+                    <label><input type="radio" name="decision" value="拒绝"><span>拒绝建议<small>保留原因并重评</small></span></label>
+                  </div>
+                  <label>修改或拒绝原因<textarea name="reason" rows="2" placeholder="接受时可留空"></textarea></label>
+                  <label>新增事实<textarea name="addedFacts" rows="2" placeholder="例如：现场资源已确认充足"></textarea></label>
+                  <label class="check-line"><input type="checkbox" name="resourceAdequate"> 已由专业人员确认现场资源充足</label>
+                  <div class="field-row"><label>最终采取的行动<input name="finalAction"></label><label>复核人角色<input name="reviewerRole" value="运营值班经理"></label></div>
+                  <label>下次改进建议<input name="improvement" placeholder="用于规则与流程复盘"></label>
+                  <button class="primary" type="submit">提交复核</button>
+                </form>
+              </article>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <section class="page" id="page-history">
+      <article class="panel">
+        <div class="panel-head"><div><p class="eyebrow">AUDIT TRAIL</p><h3>研判与复核记录</h3></div><button class="ghost" id="refreshHistory">刷新</button></div>
+        <div class="table-wrap"><table><thead><tr><th>生成时间</th><th>机场 / 事件</th><th>风险</th><th>置信度</th><th>状态</th><th>证据 / 规则</th><th></th></tr></thead><tbody id="historyTable"></tbody></table></div>
+        <div id="historyEmpty" class="empty-state">尚无记录。请先生成一条事件研判。</div>
+      </article>
+    </section>
+
+    <section class="page" id="page-tests">
+      <div class="test-banner">
+        <div><p class="eyebrow light">UNSEEN SCENARIO EVALUATION</p><h2>15 项边界与泛化测试</h2><p>每次运行均重新调用分析引擎，覆盖冲突、隐私、停止条件和人工否决等情境。</p></div>
+        <button class="accent" id="runTests">运行全部测试</button>
+      </div>
+      <div class="test-summary" id="testSummary"><strong>—</strong><span>等待运行</span></div>
+      <div id="testGrid" class="test-grid"></div>
+    </section>
+
+    <section class="page" id="page-governance">
+      <div class="governance-intro"><div><p class="eyebrow">MODEL GOVERNANCE</p><h2>可解释、可停止、可修正</h2></div><p>规则优先于生成表达。系统只提供决策支持，不执行安全、放行、取消、调度、维修、赔付或正式发布。</p></div>
+      <div class="governance-grid">
+        <article class="panel"><div class="panel-head"><h3>12 条运营规则</h3><span class="subtle">赛事规则</span></div><div id="allRules" class="governance-list"></div></article>
+        <div>
+          <article class="panel"><div class="panel-head"><h3>数据来源登记</h3></div><div id="sourceList" class="source-list"></div></article>
+          <article class="panel"><div class="panel-head"><h3>已知数据质量问题</h3></div><div id="qualityList" class="quality-list"></div></article>
+        </div>
+      </div>
+    </section>
+  </main>
+
+  <div class="toast" id="toast" role="status" aria-live="polite"></div>
+  <script type="module" src="/app.js"></script>
+</body>
+</html>

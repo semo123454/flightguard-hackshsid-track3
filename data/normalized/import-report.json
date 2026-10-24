@@ -1,0 +1,14 @@
+{
+  "datasetSha256": "0b4b5c90c08a786b2f98a379d16a47ec19e5c2428677914986296062c160102c",
+  "accepted": {
+    "airports": 0,
+    "sources": 0,
+    "monthly": 0,
+    "annual": 0,
+    "weather": 0,
+    "rules": 0
+  },
+  "rejected": [],
+  "missing": [],
+  "duplicate": 429
+}

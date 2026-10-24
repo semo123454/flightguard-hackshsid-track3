@@ -1,0 +1,14 @@
+node_modules/
+**/dist/
+.artifacts/
+.chart-data-*/
+output/*.zip
+output/*.sha256.txt
+research/real-data/raw/
+runtime/*
+!runtime/.gitkeep
+.env
+playwright-report/
+test-results/
+reports/live-evaluation-*.json
+tests/fixtures/*.local.json

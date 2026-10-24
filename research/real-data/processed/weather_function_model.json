@@ -1,0 +1,53 @@
+{
+  "modelVersion": "real-weather-proxy-v1",
+  "targetMetric": "airport_release_normal_ratio",
+  "validated": true,
+  "trainingScope": "US airports ATL/DFW/DEN/ORD/LAX/CLT/LAS/PHX/MCO/SEA, 2024-01 to 2024-04",
+  "validationSummary": "Exploratory weather sidecar: 40 rows; BTS scheduled completion is used as a proxy for release-normal ratio; GSOD units converted to mm/C; in-sample MAE 0.0099. Independent holdout validation is still required.",
+  "trainingDataChecksum": "see FlightGuard_Real_Data_Training_2024.xlsx",
+  "featureOrder": [
+    "precipitationMm",
+    "meanTemperatureC",
+    "maxWindSpeedMps",
+    "adverseWeatherDays"
+  ],
+  "means": [
+    2.5853381053021876,
+    12.007078904544144,
+    7.515340748980345,
+    30.25
+  ],
+  "scales": [
+    2.182666040152507,
+    6.216534691420995,
+    1.5204945237343699,
+    0.82915619758885
+  ],
+  "coefficients": [
+    -0.0007989153975202778,
+    0.007672355541134778,
+    0.0010922125211482166,
+    -0.007595646028955863
+  ],
+  "intercept": 0.9840840923700366,
+  "link": "identity",
+  "validRanges": {
+    "precipitationMm": [
+      0,
+      1000
+    ],
+    "meanTemperatureC": [
+      -80,
+      60
+    ],
+    "maxWindSpeedMps": [
+      0,
+      100
+    ],
+    "adverseWeatherDays": [
+      0,
+      31
+    ]
+  },
+  "airportIds": null
+}

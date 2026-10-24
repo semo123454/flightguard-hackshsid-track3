@@ -1,0 +1,112 @@
+{
+  "generatedAt": "2026-10-24",
+  "status": "automated_and_deepseek_smoke_passed_full_evaluation_pending",
+  "automated": {
+    "typecheck": {
+      "passed": true,
+      "scope": ["contracts", "api-source", "api-tests", "web"]
+    },
+    "vitest": {
+      "passed": 44,
+      "total": 44,
+      "files": 6,
+      "breakdown": {
+        "responsesProvider": 6,
+        "risk": 6,
+        "dataImport": 2,
+        "weather": 7,
+        "api": 12,
+        "llmOrchestration": 11
+      }
+    },
+    "playwright": {
+      "passed": 3,
+      "total": 3,
+      "scenarios": [
+        "structured_full_flow_question_feedback_revision_export",
+        "free_text_failure_retains_input",
+        "desktop_and_narrow_viewport_no_horizontal_overflow"
+      ]
+    },
+    "productionBuild": {
+      "passed": true
+    },
+    "productionSmoke": {
+      "passed": true,
+      "healthOk": true,
+      "airportCount": 8,
+      "landingStatus": 200,
+      "contentSecurityPolicyPresent": true,
+      "unknownApiStatus": 404,
+      "unknownApiContentType": "application/json"
+    }
+  },
+  "database": {
+    "migrations": [
+      "001_initial.sql",
+      "002_llm_cache.sql",
+      "003_audit_metadata.sql",
+      "004_feedback_confirmed_fields.sql"
+    ],
+    "repeatImportAddedRecords": 0,
+    "datasetImportRows": 1,
+    "e2eDatabase": "isolated_system_temporary_directory",
+    "interactiveLiveEvaluationDatabase": "main_demo_database_by_explicit_user_request"
+  },
+  "liveModelEvaluation": {
+    "status": "smoke_passed_full_evaluation_not_run",
+    "claimedPassRate": null,
+    "smoke": {
+      "provider": "deepseek",
+      "model": "deepseek-flash",
+      "structuredConnection": "passed",
+      "applicationReportMode": "llm",
+      "applicationReportPromptVersion": "report-v4",
+      "applicationQuestionMode": "llm",
+      "questionEvidenceIdCount": 10,
+      "criteriaFocusedScenarios": [
+        "high_risk",
+        "low_risk",
+        "source_conflict",
+        "severe_information_insufficiency",
+        "human_rejection_and_linked_revision",
+        "authority_boundary",
+        "privacy_precheck"
+      ],
+      "missingCitationCount": 0,
+      "informationInsufficiencyRetest": "passed_in_llm_mode_after_report_v3",
+      "humanRejectionRetest": "medium_to_low_with_original_and_feedback_preserved",
+      "providedDatasetRetest": {
+        "cases": [
+          "EVT001",
+          "EVT003"
+        ],
+        "liveModelRunsCompleted": 2,
+        "liveModelReportsWithoutRepresentationFinding": 1,
+        "missingCitationCount": 0,
+        "vaguePhraseCount": 0,
+        "structuredAssessment": true,
+        "peerBaselineContext": true,
+        "initialConflictRepresentationFinding": "live_report_stopped_but_presented_first_candidate_as_current",
+        "conflictStructureRetestMode": "rules_fallback_deterministic_core",
+        "conflictingCandidatesKeptSeparate": true,
+        "conflictCurrentValueAfterFix": null,
+        "conflictDeltaAfterFix": null,
+        "initialDeepSeekConflictAnalysisId": "6900c9ef-e6ca-4c03-a93f-aec4a8919133",
+        "correctedConflictAnalysisId": "c6e939cd-b4de-47f6-bed9-9f2ab561a14a"
+      }
+    },
+    "plannedBehaviorRuns": 22,
+    "plannedReportAndAnswerModelRuns": 21,
+    "reasons": [
+      "an independently authored holdout file has not been supplied",
+      "full paid evaluation has not been explicitly confirmed with EVALUATION_CONFIRM_LIVE=true",
+      "human semantic review is external to automated execution"
+    ]
+  },
+  "weatherResearch": {
+    "validatedPredictiveModelDelivered": false,
+    "defaultState": "not_configured",
+    "automatedBoundaryChecksPassed": true
+  }
+}
