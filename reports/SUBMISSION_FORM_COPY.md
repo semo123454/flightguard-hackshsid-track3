@@ -16,9 +16,7 @@ FlightGuard 是面向航空公司值班人员的航班扰动 AI 决策支持原�
 
 ## GitHub 仓库链接
 
-请替换为实际公开仓库地址：
-
-`https://github.com/<你的用户名>/<你的仓库>`
+`https://github.com/semo123454/flightguard-hackshsid-track3`
 
 ## 测试证据（可直接粘贴）
 
